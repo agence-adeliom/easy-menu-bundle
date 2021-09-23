@@ -1,0 +1,11 @@
+{
+    "name": "agence-adeliom/easy-menu-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony bundle for EasyAdmin",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Adeliom\\EasyMenuBundle\\": "src/"
+        }
+    }
+}

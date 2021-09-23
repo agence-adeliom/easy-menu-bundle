@@ -1,0 +1,53 @@
+easy:
+  menu:
+    admin:
+      menus: Menus
+      crud:
+        title:
+          menu:
+            edit: Editer le menu
+            index: Liste des menus
+            new: Nouveau menu
+            detail: Détails du menu
+          menu_item:
+            edit: Editer le lien
+            index: Liste des liens du menu
+            new: Nouveau lien
+            detail: Détail du lien
+            manage_items: Gérer les liens
+        label:
+          menu:
+            singular: un menu
+            plural: des menus
+            new: Nouveau menu
+            edit: Editer
+            delete: Supprimer
+            manage_items: Gérer les liens
+            saveAndReturn: Enregistrer le menu et retourner à la liste
+            saveAndContinue: Enregistrer le menu et rester sur cette page
+            saveAndAddAnother: Enregistrer le menu puis en créer une autre
+          menu_item:
+            singular: un lien
+            plural: des liens
+            new: Nouveau lien
+            edit: Editer le lien
+            delete: Supprimer le lien
+            go_back: Retour aux menus
+            saveAndReturn: Enregistrer le lien et retourner à la liste
+            saveAndContinue: Enregistrer le lien et rester sur cette page
+            saveAndAddAnother: Enregistrer le lien puis en créer une autre
+      panel:
+        information: Informations
+        publication: Publication
+      field:
+        name: Nom
+        title: Titre
+        code: Code
+        state: Status
+        parent: Parent
+        url: Url
+        position: Position
+        flattenParents: Arborescence
+        classAttribute: Attribut class
+        publishDate: Date de publication
+        unpublishDate: Date de dépublication
