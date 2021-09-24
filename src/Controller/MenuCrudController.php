@@ -29,12 +29,7 @@ abstract class MenuCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->addFormTheme('@FOSCKEditor/Form/ckeditor_widget.html.twig')
             ->addFormTheme('@EasyCommon/crud/custom_panel.html.twig')
-            ->addFormTheme('@EasyEditor/form/editor_widget.html.twig')
-            ->addFormTheme('@EasyMedia/form/easy-media.html.twig')
-
-
             ->setPageTitle(Crud::PAGE_INDEX, "easy.menu.admin.crud.title.menu." . Crud::PAGE_INDEX)
             ->setPageTitle(Crud::PAGE_EDIT, "easy.menu.admin.crud.title.menu." . Crud::PAGE_EDIT)
             ->setPageTitle(Crud::PAGE_NEW, "easy.menu.admin.crud.title.menu." . Crud::PAGE_NEW)
