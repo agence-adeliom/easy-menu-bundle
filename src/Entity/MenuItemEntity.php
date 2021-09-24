@@ -141,9 +141,9 @@ class MenuItemEntity {
     }
 
     /**
-     * @return int | null
+     * @return int|null
      */
-    public function getPosition(): int | null
+    public function getPosition(): ?int
     {
         return $this->position;
     }
