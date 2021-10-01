@@ -30,6 +30,10 @@ class MenuCreationListener
         $rootItem->setMenu($menu);
         $rootItem->setName('Root');
         $rootItem->setState(ThreeStateStatusEnum::PUBLISHED());
+        $rootItem->setPosition(0);
+        $rootItem->setLft(0);
+        $rootItem->setRgt(0);
+        $rootItem->setLvl(0);
 
         $menu->addItem($rootItem);
     }
