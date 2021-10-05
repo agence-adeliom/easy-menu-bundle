@@ -77,6 +77,30 @@ class DashboardController extends AbstractDashboardController
         ...
 ```
 
+### Front add a menu in a page (with twig)
+
+```shell
+# 1. Create as separate html twig file to render your template :
+templates/bundles/EasyMenuBundle/front/menus/my_menu_code.html.twig
+
+# 2. Execute this twig extension on your controller template
+{{ render_easy_menu('my_menu_code') }}
+
+# Optional. If you need to specify your own template file path
+{{ render_easy_menu('my_menu_code', { 'template': 'menus/my_menu_code.html.twig' }) }}
+```
+
+### In your menu template you can list menu items
+
+```html
+<ul>
+    {% for item in menu.items %}
+        <li>{{ item.name }}</li>
+        {# recursive loop ... #}
+    {% endfor %}
+</ul>
+```
+
 
 ## License
 

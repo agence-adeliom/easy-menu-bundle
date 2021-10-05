@@ -54,11 +54,17 @@ class EasyMenuExtension extends AbstractExtension
             throw new \Exception('Menu ' . $code . ' not found. Please add it !');
         }
 
-        if (!$this->twig->getLoader()->exists("@EasyMenu/front/menus/" . $code . ".html.twig")) {
-            throw new \Exception('Template not found ' . "@EasyMenu/front/menus/" . $code . ".html.twig");
+        $template = "@EasyMenu/front/menus/" . $code . ".html.twig";
+
+        if ( !empty($extra['template']) ) {
+            $template = $extra['template'];
         }
 
-        return new Markup($this->twig->render("@EasyMenu/front/menus/" . $code . ".html.twig", array_merge($context, [
+        if (!$this->twig->getLoader()->exists($template)) {
+            throw new \Exception('Template not found ' . $template);
+        }
+
+        return new Markup($this->twig->render($template, array_merge($context, [
             "menu" => $menu
         ], $extra)), 'UTF-8');
     }
