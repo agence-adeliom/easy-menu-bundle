@@ -27,7 +27,9 @@ abstract class MenuItemCrudController extends AbstractCrudController
 {
     use PositionSortableActionTrait;
 
-    private $adminUrlGenerator;
+    private AdminUrlGenerator $adminUrlGenerator;
+
+    const TRANSLATE_TITLE_PREFIX =  "easy.menu.admin.crud.title.menu_item.";
 
     public function __construct(AdminUrlGenerator $adminUrlGenerator)
     {
@@ -40,10 +42,10 @@ abstract class MenuItemCrudController extends AbstractCrudController
             ->addFormTheme('@EasyFields/form/association_widget.html.twig')
             ->addFormTheme('@EasyCommon/crud/custom_panel.html.twig')
 
-            ->setPageTitle(Crud::PAGE_INDEX, "easy.menu.admin.crud.title.menu_item." . Crud::PAGE_INDEX)
-            ->setPageTitle(Crud::PAGE_EDIT, "easy.menu.admin.crud.title.menu_item." . Crud::PAGE_EDIT)
-            ->setPageTitle(Crud::PAGE_NEW, "easy.menu.admin.crud.title.menu_item." . Crud::PAGE_NEW)
-            ->setPageTitle(Crud::PAGE_DETAIL, "easy.menu.admin.crud.title.menu_item." . Crud::PAGE_DETAIL)
+            ->setPageTitle(Crud::PAGE_INDEX, self::TRANSLATE_TITLE_PREFIX . Crud::PAGE_INDEX)
+            ->setPageTitle(Crud::PAGE_EDIT, self::TRANSLATE_TITLE_PREFIX . Crud::PAGE_EDIT)
+            ->setPageTitle(Crud::PAGE_NEW, self::TRANSLATE_TITLE_PREFIX . Crud::PAGE_NEW)
+            ->setPageTitle(Crud::PAGE_DETAIL, self::TRANSLATE_TITLE_PREFIX . Crud::PAGE_DETAIL)
             ->setEntityLabelInSingular("easy.menu.admin.crud.label.menu_item.singular")
             ->setEntityLabelInPlural("easy.menu.admin.crud.label.menu_item.plural")
 
@@ -129,7 +131,6 @@ abstract class MenuItemCrudController extends AbstractCrudController
 
         yield IdField::new('id')->hideOnForm();
         yield from $this->informationsFields($pageName, $subject);
-//        yield from $this->publishFields($pageName, $subject);
     }
 
     public function informationsFields(string $pageName, $subject): iterable

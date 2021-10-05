@@ -21,7 +21,7 @@ class MenuCreationListener
 
     // the entity listener methods receive two arguments:
     // the entity instance and the lifecycle event
-    public function prePersist(MenuEntity $menu, LifecycleEventArgs $event): void
+    public function prePersist(MenuEntity $menu): void
     {
         /**
          * @var MenuItemEntity $rootItem

@@ -19,7 +19,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class MenuCrudController extends AbstractCrudController
 {
-    private $adminUrlGenerator;
+    private AdminUrlGenerator $adminUrlGenerator;
+
+    const TRANSLATE_TITLE_PREFIX =  "easy.menu.admin.crud.title.menu.";
 
     public function __construct(AdminUrlGenerator $adminUrlGenerator)
     {
@@ -30,10 +32,10 @@ abstract class MenuCrudController extends AbstractCrudController
     {
         return $crud
             ->addFormTheme('@EasyCommon/crud/custom_panel.html.twig')
-            ->setPageTitle(Crud::PAGE_INDEX, "easy.menu.admin.crud.title.menu." . Crud::PAGE_INDEX)
-            ->setPageTitle(Crud::PAGE_EDIT, "easy.menu.admin.crud.title.menu." . Crud::PAGE_EDIT)
-            ->setPageTitle(Crud::PAGE_NEW, "easy.menu.admin.crud.title.menu." . Crud::PAGE_NEW)
-            ->setPageTitle(Crud::PAGE_DETAIL, "easy.menu.admin.crud.title.menu." . Crud::PAGE_DETAIL)
+            ->setPageTitle(Crud::PAGE_INDEX, self::TRANSLATE_TITLE_PREFIX . Crud::PAGE_INDEX)
+            ->setPageTitle(Crud::PAGE_EDIT, self::TRANSLATE_TITLE_PREFIX . Crud::PAGE_EDIT)
+            ->setPageTitle(Crud::PAGE_NEW, self::TRANSLATE_TITLE_PREFIX . Crud::PAGE_NEW)
+            ->setPageTitle(Crud::PAGE_DETAIL, self::TRANSLATE_TITLE_PREFIX . Crud::PAGE_DETAIL)
             ->setEntityLabelInSingular("easy.menu.admin.crud.label.menu.singular")
             ->setEntityLabelInPlural("easy.menu.admin.crud.label.menu.plural")
             ;

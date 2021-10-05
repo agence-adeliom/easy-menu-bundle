@@ -107,7 +107,7 @@ class MenuEntity {
     /**
      * @ORM\PreRemove()
      */
-    public function onRemove(LifecycleEventArgs $event): void
+    public function onRemove(): void
     {
         $this->setStatus(false);
     }

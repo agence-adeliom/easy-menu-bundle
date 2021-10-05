@@ -199,12 +199,13 @@ class MenuItemEntity {
     /**
      * @param MenuItemEntity $parent
      */
-    public function setParent($parent)
+    public function setParent(MenuItemEntity $parent)
     {
         $this->parent = $parent;
 
-        if(!is_null($parent))
+        if (!is_null($parent)) {
             $parent->addChild($this);
+        }
     }
 
     /**
@@ -264,7 +265,7 @@ class MenuItemEntity {
     /**
      * @ORM\PreRemove()
      */
-    public function onRemove(LifecycleEventArgs $event): void
+    public function onRemove(): void
     {
         $this->setState(ThreeStateStatusEnum::UNPUBLISHED());
     }
@@ -280,22 +281,21 @@ class MenuItemEntity {
     /**
      * Has parent
      */
-    public function hasParent()
+    public function hasParent(): bool
     {
         return !is_null($this->parent);
     }
 
-    public function getActiveChildren()
+    public function getActiveChildren(): array
     {
-        $children = array();
-
+        $newChildren = [];
         foreach ($this->children as $child) {
             if($child->enabled) {
-                array_push($children, $child);
+                array_push($newChildren, $child);
             }
         }
 
-        return $children;
+        return $newChildren;
     }
 
     public function getParents($parents = [], $parent = null)

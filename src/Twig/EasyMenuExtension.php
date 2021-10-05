@@ -2,9 +2,14 @@
 
 namespace Adeliom\EasyMenuBundle\Twig;
 
+use Adeliom\EasyMenuBundle\Exceptions\MenuNotFoundException;
+use Adeliom\EasyMenuBundle\Exceptions\TemplateNotFoundException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use Twig\Extension\AbstractExtension;
 use Twig\Markup;
 use Twig\TwigFunction;
@@ -44,14 +49,21 @@ class EasyMenuExtension extends AbstractExtension
     }
 
     /**
-     * @param array $datas
+     * @param Environment $env
+     * @param array $context
+     * @param $code
+     * @param array $extra
+     * @return Markup
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    public function renderEasyMenu(Environment $env, array $context, $code, $extra = [])
+    public function renderEasyMenu(Environment $env, array $context, $code, $extra = []): Markup
     {
         $menu = $this->em->getRepository($this->menuClass)->findOneByCode($code);
 
         if (empty($menu)) {
-            throw new \Exception('Menu ' . $code . ' not found. Please add it !');
+            throw new MenuNotFoundException($code);
         }
 
         $template = "@EasyMenu/front/menus/" . $code . ".html.twig";
@@ -61,7 +73,7 @@ class EasyMenuExtension extends AbstractExtension
         }
 
         if (!$this->twig->getLoader()->exists($template)) {
-            throw new \Exception('Template not found ' . $template);
+            throw new TemplateNotFoundException($template);
         }
 
         return new Markup($this->twig->render($template, array_merge($context, [
