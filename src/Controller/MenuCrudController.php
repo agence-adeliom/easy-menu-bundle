@@ -109,7 +109,7 @@ abstract class MenuCrudController extends AbstractCrudController
     {
         yield FormField::addPanel("easy.menu.admin.panel.publication")->collapsible()->addCssClass("col-4");
         yield BooleanField::new("status", "easy.menu.admin.field.state")
-            ->setRequired(true)
+            ->setRequired(false)
             ->renderAsSwitch(true);
     }
 }
