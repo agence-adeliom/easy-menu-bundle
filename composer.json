@@ -1,6 +1,7 @@
 {
     "name": "agence-adeliom/easy-menu-bundle",
     "type": "symfony-bundle",
+    "version": "1.0.0",
     "description": "A Symfony Menu bundle for EasyAdmin",
     "keywords": ["symfony", "easyadmin", "menu", "menu-manager"],
     "homepage": "https://github.com/agence-adeliom/easy-menu-bundle",
