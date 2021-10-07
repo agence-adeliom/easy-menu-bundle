@@ -44,7 +44,7 @@ class EasyMenuExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('render_easy_menu', [$this, 'renderEasyMenu'], ['is_safe' => ['js', 'html'], 'needs_context' => true, 'needs_environment' => true]),
+            new TwigFunction('easy_menu', [$this, 'renderEasyMenu'], ['is_safe' => ['js', 'html'], 'needs_context' => true, 'needs_environment' => true]),
         ];
     }
 

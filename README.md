@@ -84,10 +84,10 @@ class DashboardController extends AbstractDashboardController
 templates/bundles/EasyMenuBundle/front/menus/my_menu_code.html.twig
 
 # 2. Execute this twig extension on your controller template
-{{ render_easy_menu('my_menu_code') }}
+{{ easy_menu('my_menu_code') }}
 
 # Optional. If you need to specify your own template file path
-{{ render_easy_menu('my_menu_code', { 'template': 'menus/my_menu_code.html.twig' }) }}
+{{ easy_menu('my_menu_code', { 'template': 'menus/my_menu_code.html.twig' }) }}
 ```
 
 ### In your menu template you can list menu items
