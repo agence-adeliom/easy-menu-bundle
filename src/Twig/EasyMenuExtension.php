@@ -4,6 +4,7 @@ namespace Adeliom\EasyMenuBundle\Twig;
 
 use Adeliom\EasyMenuBundle\Exceptions\MenuNotFoundException;
 use Adeliom\EasyMenuBundle\Exceptions\TemplateNotFoundException;
+use App\Entity\EasyMenu\MenuItem;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Twig\Environment;
@@ -31,11 +32,17 @@ class EasyMenuExtension extends AbstractExtension
      */
     private $menuClass;
 
-    public function __construct(Environment $twig, EntityManagerInterface $em, string $menuClass)
+    /**
+     * @var string
+     */
+    private $menuItemClass;
+
+    public function __construct(Environment $twig, EntityManagerInterface $em, string $menuClass, string $menuItemClass)
     {
         $this->twig = $twig;
         $this->em = $em;
         $this->menuClass = $menuClass;
+        $this->menuItemClass = $menuItemClass;
     }
 
     /**
@@ -75,6 +82,13 @@ class EasyMenuExtension extends AbstractExtension
         if (!$this->twig->getLoader()->exists($template)) {
             throw new TemplateNotFoundException($template);
         }
+
+        $rootItem = $this->em->getRepository($this->menuItemClass)->findOneBy([
+            'menu' => $menu,
+            'parent' => null
+        ]);
+
+        $menu->setRootItem($rootItem);
 
         return new Markup($this->twig->render($template, array_merge($context, [
             "menu" => $menu
