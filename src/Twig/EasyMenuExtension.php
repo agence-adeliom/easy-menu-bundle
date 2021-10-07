@@ -88,9 +88,10 @@ class EasyMenuExtension extends AbstractExtension
             'parent' => null
         ]);
 
+        $menu->setRootItem($rootItem);
+
         return new Markup($this->twig->render($template, array_merge($context, [
-            "menu" => $menu,
-            "rootItem" => $rootItem,
+            "menu" => $menu
         ], $extra)), 'UTF-8');
     }
 

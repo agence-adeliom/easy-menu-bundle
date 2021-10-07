@@ -43,6 +43,11 @@ class MenuEntity {
     protected $name;
 
     /**
+     * @var MenuItemEntity | null
+     */
+    protected $rootItem;
+
+    /**
      * Constructor
      *
      */
@@ -126,6 +131,22 @@ class MenuEntity {
     public function setCode(string $code): void
     {
         $this->code = $code;
+    }
+
+    /**
+     * @return MenuItemEntity|null
+     */
+    public function getRootItem(): ?MenuItemEntity
+    {
+        return $this->rootItem;
+    }
+
+    /**
+     * @param MenuItemEntity|null $rootItem
+     */
+    public function setRootItem(?MenuItemEntity $rootItem): void
+    {
+        $this->rootItem = $rootItem;
     }
 
     public function __toString()
