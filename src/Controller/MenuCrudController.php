@@ -19,14 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class MenuCrudController extends AbstractCrudController
 {
-    private AdminUrlGenerator $adminUrlGenerator;
-
     const TRANSLATE_TITLE_PREFIX =  "easy.menu.admin.crud.title.menu.";
-
-    public function __construct(AdminUrlGenerator $adminUrlGenerator)
-    {
-        $this->adminUrlGenerator = $adminUrlGenerator;
-    }
 
     public function configureCrud(Crud $crud): Crud
     {
@@ -72,7 +65,7 @@ abstract class MenuCrudController extends AbstractCrudController
     // Redirect to Item Crud Controller to manage selected menu items
     public function goToItems(AdminContext $context): Response
     {
-        $url = $this->adminUrlGenerator
+        $url = $this->get(AdminUrlGenerator::class)
             ->unsetAll()
             ->setController($this->container->get("parameter_bag")->get("easy_menu.menu_item.crud") )
             ->setAction(Action::INDEX)

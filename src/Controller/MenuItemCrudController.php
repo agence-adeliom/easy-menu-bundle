@@ -27,14 +27,7 @@ abstract class MenuItemCrudController extends AbstractCrudController
 {
     use PositionSortableActionTrait;
 
-    private AdminUrlGenerator $adminUrlGenerator;
-
     const TRANSLATE_TITLE_PREFIX =  "easy.menu.admin.crud.title.menu_item.";
-
-    public function __construct(AdminUrlGenerator $adminUrlGenerator)
-    {
-        $this->adminUrlGenerator = $adminUrlGenerator;
-    }
 
     public function configureCrud(Crud $crud): Crud
     {
@@ -81,7 +74,7 @@ abstract class MenuItemCrudController extends AbstractCrudController
             return $action;
         });
 
-        $url = $this->adminUrlGenerator
+        $url = $this->get(AdminUrlGenerator::class)
             ->unsetAll()
             ->setController( $this->container->get("parameter_bag")->get("easy_menu.menu.crud") )
             ->setAction(Action::INDEX)
