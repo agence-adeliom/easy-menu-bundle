@@ -247,6 +247,18 @@ class MenuItemEntity {
     }
 
     /**
+     * Get only published children
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPublishedChildren()
+    {
+        return $this->children->filter(function (MenuItemEntity $child) {
+            return $child->getState() == ThreeStateStatusEnum::PUBLISHED();
+        });
+    }
+
+    /**
      * @return string|ThreeStateStatusEnum|null
      */
     public function getState()
@@ -284,18 +296,6 @@ class MenuItemEntity {
     public function hasParent(): bool
     {
         return !is_null($this->parent);
-    }
-
-    public function getActiveChildren(): array
-    {
-        $newChildren = [];
-        foreach ($this->children as $child) {
-            if($child->enabled) {
-                array_push($newChildren, $child);
-            }
-        }
-
-        return $newChildren;
     }
 
     public function getParents($parents = [], $parent = null)
