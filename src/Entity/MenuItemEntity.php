@@ -14,76 +14,157 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\HasLifecycleCallbacks()
- * @ORM\MappedSuperclass(repositoryClass="Adeliom\EasyMenuBundle\Repository\MenuItemRepository")
  * @Gedmo\Tree(type="nested")
  */
-class MenuItemEntity {
-
+#[ORM\HasLifecycleCallbacks]
+#[ORM\MappedSuperclass(repositoryClass: 'Adeliom\EasyMenuBundle\Repository\MenuItemRepository')]
+class MenuItemEntity
+{
     use EntityIdTrait;
     use EntityTimestampableTrait {
         EntityTimestampableTrait::__construct as private __TimestampableConstruct;
     }
-
     use EntityThreeStateStatusTrait;
     use EntityPublishableTrait {
         EntityPublishableTrait::__construct as private __PublishableConstruct;
     }
 
-    use PositionSortableTrait;
+    /**
+     * @Gedmo\TreeLeft
+     */
+    #[ORM\Column(name: 'lft', type: 'integer')]
+    protected $lft;
+
+    /**
+     * @Gedmo\TreeLevel
+     */
+    #[ORM\Column(name: 'lvl', type: 'integer')]
+    protected $lvl;
+
+    /**
+     * @Gedmo\TreeRight
+     */
+    #[ORM\Column(name: 'rgt', type: 'integer')]
+    protected $rgt;
+
+    /**
+     * @Gedmo\TreeRoot
+     */
+    #[ORM\Column(name: 'root', type: 'integer', nullable: true)]
+    protected $root;
+
+
+    /**
+     * @return mixed
+     */
+    public function getLft()
+    {
+        return $this->lft;
+    }
+
+    /**
+     * @param mixed $lft
+     */
+    public function setLft($lft): void
+    {
+        $this->lft = $lft;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLvl()
+    {
+        return $this->lvl;
+    }
+
+    /**
+     * @param mixed $lvl
+     */
+    public function setLvl($lvl): void
+    {
+        $this->lvl = $lvl;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRgt()
+    {
+        return $this->rgt;
+    }
+
+    /**
+     * @param mixed $rgt
+     */
+    public function setRgt($rgt): void
+    {
+        $this->rgt = $rgt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRoot()
+    {
+        return $this->root;
+    }
+
+    /**
+     * @param mixed $root
+     */
+    public function setRoot($root): void
+    {
+        $this->root = $root;
+    }
+
+    public function getSortableData($name)
+    {
+        return $this->{$name};
+    }
 
     /**
      * @var MenuEntity | null
      */
     protected $menu;
-
     /**
      * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
      */
+    #[ORM\Column(name: 'name', type: 'string', length: 255)]
     protected $name;
-
     /**
      * @var string | null
-     *
-     * @ORM\Column(name="url", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'url', type: 'string', length: 255, nullable: true)]
     protected $url;
-
     /**
      * @var string | null
-     * @ORM\Column(name="class_attribute", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'class_attribute', type: 'string', length: 255, nullable: true)]
     protected $classAttribute;
-
     /**
      * @var integer
-     * @ORM\Column(name="position", type="smallint", options={"unsigned"=true}, nullable=true)
      */
+    #[ORM\Column(name: 'position', type: 'smallint', options: ['unsigned' => true], nullable: true)]
     protected $position;
-
     /**
      * @var bool
-     * @ORM\Column(name="target", type="boolean", nullable=true, options={"default":false})
      */
+    #[ORM\Column(name: 'target', type: 'boolean', nullable: true, options: ['default' => false])]
     protected $target;
-
     /**
      * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="App\Entity\EasyMenu\MenuItem", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * @var MenuItemEntity | null
      */
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\EasyMenu\MenuItem', inversedBy: 'children')]
+    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     protected $parent;
-
     /**
      * @var MenuItemEntity[]
-     * @ORM\OneToMany(targetEntity="App\Entity\EasyMenu\MenuItem", mappedBy="parent")
-     * @ORM\OrderBy({"lft" = "ASC"})
      */
+    #[ORM\OneToMany(targetEntity: 'App\Entity\EasyMenu\MenuItem', mappedBy: 'parent')]
+    #[ORM\OrderBy(['lft' => 'ASC'])]
     protected $children;
-
     public function __construct()
     {
         $this->__TimestampableConstruct();
@@ -91,7 +172,6 @@ class MenuItemEntity {
         $this->children = new ArrayCollection();
         $this->state = ThreeStateStatusEnum::PENDING();
     }
-
     /**
      * @return string
      */
@@ -99,7 +179,6 @@ class MenuItemEntity {
     {
         return $this->name;
     }
-
     /**
      * @param string $name
      */
@@ -107,7 +186,6 @@ class MenuItemEntity {
     {
         $this->name = $name;
     }
-
     /**
      * @return string | null
      */
@@ -115,7 +193,6 @@ class MenuItemEntity {
     {
         return $this->url;
     }
-
     /**
      * @param string | null $url
      */
@@ -123,7 +200,6 @@ class MenuItemEntity {
     {
         $this->url = $url;
     }
-
     /**
      * @return string | null
      */
@@ -131,7 +207,6 @@ class MenuItemEntity {
     {
         return $this->classAttribute;
     }
-
     /**
      * @param string | null $classAttribute
      */
@@ -139,7 +214,6 @@ class MenuItemEntity {
     {
         $this->classAttribute = $classAttribute;
     }
-
     /**
      * @return int|null
      */
@@ -147,7 +221,6 @@ class MenuItemEntity {
     {
         return $this->position;
     }
-
     /**
      * @param int $position
      */
@@ -155,7 +228,6 @@ class MenuItemEntity {
     {
         $this->position = $position;
     }
-
     /**
      * @return bool
      */
@@ -163,7 +235,6 @@ class MenuItemEntity {
     {
         return $this->target;
     }
-
     /**
      * @param bool $target
      */
@@ -171,7 +242,6 @@ class MenuItemEntity {
     {
         $this->target = $target;
     }
-
     /**
      * @return MenuEntity|null
      */
@@ -179,7 +249,6 @@ class MenuItemEntity {
     {
         return $this->menu;
     }
-
     /**
      * @param MenuEntity|null $menu
      */
@@ -187,7 +256,6 @@ class MenuItemEntity {
     {
         $this->menu = $menu;
     }
-
     /**
      * @return MenuItemEntity
      */
@@ -195,7 +263,6 @@ class MenuItemEntity {
     {
         return $this->parent;
     }
-
     /**
      * @param MenuItemEntity $parent
      */
@@ -207,7 +274,6 @@ class MenuItemEntity {
             $parent->addChild($this);
         }
     }
-
     /**
      * Add child
      * @param MenuItemEntity $child
@@ -216,7 +282,6 @@ class MenuItemEntity {
     {
         $this->children[] = $child;
     }
-
     /**
      * Remove child
      *
@@ -226,7 +291,6 @@ class MenuItemEntity {
     {
         $this->children->removeElement($child);
     }
-
     /**
      * Set children
      * @param ArrayCollection $children
@@ -235,7 +299,6 @@ class MenuItemEntity {
     {
         $this->children = $children;
     }
-
     /**
      * Get children
      *
@@ -245,7 +308,6 @@ class MenuItemEntity {
     {
         return $this->children;
     }
-
     /**
      * Get only published children
      *
@@ -257,7 +319,6 @@ class MenuItemEntity {
             return $child->getState() == ThreeStateStatusEnum::PUBLISHED();
         });
     }
-
     /**
      * @return string|ThreeStateStatusEnum|null
      */
@@ -265,7 +326,6 @@ class MenuItemEntity {
     {
         return $this->state;
     }
-
     /**
      * @param string|ThreeStateStatusEnum|null $state
      */
@@ -273,15 +333,11 @@ class MenuItemEntity {
     {
         $this->state = $state;
     }
-
-    /**
-     * @ORM\PreRemove()
-     */
-    public function onRemove(): void
+    #[ORM\PreRemove]
+    public function onRemove() : void
     {
         $this->setState(ThreeStateStatusEnum::UNPUBLISHED());
     }
-
     /**
      * Has child
      */
@@ -289,7 +345,6 @@ class MenuItemEntity {
     {
         return count($this->children) > 0;
     }
-
     /**
      * Has parent
      */
@@ -297,7 +352,6 @@ class MenuItemEntity {
     {
         return !is_null($this->parent);
     }
-
     public function getParents($parents = [], $parent = null)
     {
         if (empty($parent)) {
@@ -311,12 +365,10 @@ class MenuItemEntity {
         }
         return $parents;
     }
-
     public function getFlattenParents() : string
     {
         return implode(' / ', array_reverse($this->getParents()) );
     }
-
     public function __toString()
     {
         return isset($this->name) ? $this->name : "";

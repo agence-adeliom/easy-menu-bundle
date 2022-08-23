@@ -10,43 +10,34 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-/**
- * @UniqueEntity("code")
- * @ORM\HasLifecycleCallbacks()
- * @ORM\MappedSuperclass(repositoryClass="Adeliom\EasyMenuBundle\Repository\MenuRepository")
- */
-class MenuEntity {
-
+#[UniqueEntity('code')]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\MappedSuperclass(repositoryClass: 'Adeliom\EasyMenuBundle\Repository\MenuRepository')]
+class MenuEntity
+{
     use EntityIdTrait;
     use EntityTimestampableTrait {
         EntityTimestampableTrait::__construct as private __TimestampableConstruct;
     }
-
     use EntityStatusTrait;
-
     /**
      * @var MenuItemEntity[] | null
      */
     protected $items;
-
     /**
      * @var string
-     * @ORM\Column(name="code", type="string", length=30, nullable=false)
      **/
+    #[ORM\Column(name: 'code', type: 'string', length: 30, nullable: false)]
     protected $code;
-
     /**
      * @var string | null
-     *
-     * @ORM\Column(name="name", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'name', type: 'string', length: 255, nullable: true)]
     protected $name;
-
     /**
      * @var MenuItemEntity | null
      */
     protected $rootItem;
-
     /**
      * Constructor
      *
@@ -56,7 +47,6 @@ class MenuEntity {
         $this->__TimestampableConstruct();
         $this->items = new ArrayCollection();
     }
-
     /**
      * Set name
      *
@@ -66,7 +56,6 @@ class MenuEntity {
     {
         $this->name = $name;
     }
-
     /**
      * Get name
      *
@@ -76,7 +65,6 @@ class MenuEntity {
     {
         return $this->name;
     }
-
     /**
      * Get menuItems
      *
@@ -86,7 +74,6 @@ class MenuEntity {
     {
         return $this->menuItems;
     }
-
     /**
      * @return MenuItemEntity[]|ArrayCollection
      */
@@ -94,7 +81,6 @@ class MenuEntity {
     {
         return $this->items;
     }
-
     public function addItem(MenuItemEntity $item): void
     {
         $this->items->add($item);
@@ -102,21 +88,16 @@ class MenuEntity {
             $item->setMenu($this);
         }
     }
-
     public function removeItem(MenuItemEntity $item): void
     {
         $this->items->removeElement($item);
         $item->setMenu(null);
     }
-
-    /**
-     * @ORM\PreRemove()
-     */
-    public function onRemove(): void
+    #[ORM\PreRemove]
+    public function onRemove() : void
     {
         $this->setStatus(false);
     }
-
     /**
      * @return string
      */
@@ -124,7 +105,6 @@ class MenuEntity {
     {
         return $this->code;
     }
-
     /**
      * @param string $code
      */
@@ -132,7 +112,6 @@ class MenuEntity {
     {
         $this->code = $code;
     }
-
     /**
      * @return MenuItemEntity|null
      */
@@ -140,7 +119,6 @@ class MenuEntity {
     {
         return $this->rootItem;
     }
-
     /**
      * @param MenuItemEntity|null $rootItem
      */
@@ -148,10 +126,8 @@ class MenuEntity {
     {
         $this->rootItem = $rootItem;
     }
-
     public function __toString()
     {
         return isset($this->name) ? $this->name : "";
     }
-
 }
