@@ -1,0 +1,53 @@
+easy:
+  menu:
+    admin:
+      menus: Menus
+      crud:
+        title:
+          menu:
+            edit: Menu edition
+            index: Menus list
+            new: New menu
+            detail: Menu details
+          menu_item:
+            edit: Link edition
+            index: Links list
+            new: New link
+            detail: Link details
+            manage_items: Manage links
+        label:
+          menu:
+            singular: menu
+            plural: menus
+            new: New menu
+            edit: Edit
+            delete: Delete
+            manage_items: Manage links
+            saveAndReturn: Save and return
+            saveAndContinue: Save and continue
+            saveAndAddAnother: Save and add another
+          menu_item:
+            singular: link
+            plural: links
+            new: New link
+            edit: Edit
+            delete: Delete
+            go_back: Go back to menus list
+            saveAndReturn: Save and return
+            saveAndContinue: Save and continue
+            saveAndAddAnother: Save and add another
+      panel:
+        information: Informations
+        publication: Publication
+      field:
+        name: Nom
+        title: Title
+        code: Code
+        state: Status
+        parent: Parent
+        url: Url
+        position: Position
+        flattenParents: Tree
+        classAttribute: Class attribute
+        publishDate: Publish date
+        unpublishDate: Unpublish date

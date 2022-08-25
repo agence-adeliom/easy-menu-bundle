@@ -1,0 +1,56 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Adeliom\EasyMenuBundle\Controller\:
+        resource: '../../Controller'
+        autowire: true
+        autoconfigure: true
+        tags: [ 'controller.service_arguments' ]
+
+    easy_menu.menu.repository:
+        class: '%easy_menu.menu.repository%'
+        arguments:
+            - '@Doctrine\Persistence\ManagerRegistry'
+            - '%easy_menu.menu.class%'
+        calls:
+            - [ 'setConfig', [ '%easy_menu.cache%' ] ]
+        tags: [ doctrine.repository_service ]
+
+    easy_menu.menu_item.repository:
+        class: '%easy_menu.menu_item.repository%'
+        arguments:
+            - '@Doctrine\Persistence\ManagerRegistry'
+            - '%easy_menu.menu_item.class%'
+        calls:
+            - [ 'setConfig', [ '%easy_menu.cache%' ] ]
+        tags: [ doctrine.repository_service ]
+
+    Adeliom\EasyMenuBundle\EventListener\DoctrineMappingListener:
+        arguments:
+            - '%easy_menu.menu.class%'
+            - '%easy_menu.menu_item.class%'
+        tags:
+            - doctrine.event_subscriber
+
+    Adeliom\EasyMenuBundle\Twig\EasyMenuExtension:
+      public: true
+      arguments:
+        - '@twig'
+        - '@doctrine.orm.entity_manager'
+        - '%easy_menu.menu.class%'
+        - '%easy_menu.menu_item.class%'
+      tags:
+        - { name: twig.extension }
+
+    Adeliom\EasyMenuBundle\EventListener\MenuCreationListener:
+      arguments:
+        - '%easy_menu.menu.class%'
+        - '%easy_menu.menu_item.class%'
+      tags:
+        - # these are the options required to define the entity listener
+          name: 'doctrine.orm.entity_listener'
+          event: 'prePersist'
+          entity: '%easy_menu.menu.class%'
+          lazy: true
