@@ -66,7 +66,7 @@ abstract class MenuCrudController extends AbstractCrudController
     // Redirect to Item Crud Controller to manage selected menu items
     public function goToItems(AdminContext $context): Response
     {
-        $url = $this->get(AdminUrlGenerator::class)
+        $url = $this->container->get(AdminUrlGenerator::class)
             ->unsetAll()
             ->setController($this->container->get("parameter_bag")->get("easy_menu.menu_item.crud"))
             ->setAction(Action::INDEX)
@@ -77,7 +77,7 @@ abstract class MenuCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $context = $this->get(AdminContextProvider::class)->getContext();
+        $context = $this->container->get(AdminContextProvider::class)->getContext();
         $subject = $context->getEntity();
 
         yield IdField::new('id')->hideOnForm();

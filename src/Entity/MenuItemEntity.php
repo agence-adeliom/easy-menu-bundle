@@ -18,11 +18,11 @@ class MenuItemEntity implements \Stringable
 {
     use EntityIdTrait;
     use EntityTimestampableTrait {
-        EntityTimestampableTrait::__construct as private __TimestampableConstruct;
+        EntityTimestampableTrait::__construct as private TimestampableConstruct;
     }
     use EntityThreeStateStatusTrait;
     use EntityPublishableTrait {
-        EntityPublishableTrait::__construct as private __PublishableConstruct;
+        EntityPublishableTrait::__construct as private PublishableConstruct;
     }
 
     #[ORM\Column(name: 'lft', type: \Doctrine\DBAL\Types\Types::INTEGER)]
