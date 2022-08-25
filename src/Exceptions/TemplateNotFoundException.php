@@ -15,6 +15,9 @@ namespace Adeliom\EasyMenuBundle\Exceptions;
 
 final class TemplateNotFoundException extends \RuntimeException
 {
+    /**
+     * @readonly
+     */
     private string $template;
 
     public function __construct(string $template)

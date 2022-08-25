@@ -6,9 +6,8 @@ use Adeliom\EasyMenuBundle\Entity\MenuEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 
-
-class MenuRepository extends ServiceEntityRepository {
-
+class MenuRepository extends ServiceEntityRepository
+{
     /**
      * @var bool
      */
@@ -19,18 +18,12 @@ class MenuRepository extends ServiceEntityRepository {
      */
     protected $cacheTtl;
 
-    /**
-     * @param array $cacheConfig
-     */
     public function setConfig(array $cacheConfig)
     {
         $this->cacheEnabled = $cacheConfig['enabled'];
         $this->cacheTtl     = $cacheConfig['ttl'];
     }
 
-    /**
-     * @return QueryBuilder
-     */
     public function getPublishedQuery(): QueryBuilder
     {
         $qb = $this->createQueryBuilder('menu')
@@ -51,5 +44,4 @@ class MenuRepository extends ServiceEntityRepository {
             ->useResultCache($this->cacheEnabled, $this->cacheTtl)
             ->getResult();
     }
-
 }

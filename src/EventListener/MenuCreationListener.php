@@ -2,21 +2,14 @@
 
 namespace Adeliom\EasyMenuBundle\EventListener;
 
-
 use Adeliom\EasyCommonBundle\Enum\ThreeStateStatusEnum;
 use Adeliom\EasyMenuBundle\Entity\MenuEntity;
 use Adeliom\EasyMenuBundle\Entity\MenuItemEntity;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 class MenuCreationListener
 {
-    protected $menuClass;
-    protected $menuItemClass;
-
-    public function __construct(string $menuClass, string $menuItemClass)
+    public function __construct(protected string $menuClass, protected string $menuItemClass)
     {
-        $this->menuClass = $menuClass;
-        $this->menuItemClass = $menuItemClass;
     }
 
     // the entity listener methods receive two arguments:

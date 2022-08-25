@@ -27,7 +27,14 @@ abstract class MenuItemCrudController extends AbstractCrudController
 {
     use PositionSortableActionTrait;
 
-    const TRANSLATE_TITLE_PREFIX =  "easy.menu.admin.crud.title.menu_item.";
+    /**
+     * @var string
+     */
+    public const TRANSLATE_TITLE_PREFIX =  "easy.menu.admin.crud.title.menu_item.";
+
+    public function __construct(private \Doctrine\Persistence\ManagerRegistry $managerRegistry)
+    {
+    }
 
     public function configureCrud(Crud $crud): Crud
     {
@@ -61,22 +68,18 @@ abstract class MenuItemCrudController extends AbstractCrudController
 
         $actions->disable(Action::DETAIL);
 
-        $actions->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
-            $action->displayIf(function($entity) {
-                return !empty($entity->getParent());
-            });
+        $actions->update(Crud::PAGE_INDEX, Action::EDIT, static function (Action $action) {
+            $action->displayIf(static fn($entity) => !empty($entity->getParent()));
             return $action;
         });
-        $actions->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
-            $action->displayIf(function($entity) {
-                return !empty($entity->getParent());
-            });
+        $actions->update(Crud::PAGE_INDEX, Action::DELETE, static function (Action $action) {
+            $action->displayIf(static fn($entity) => !empty($entity->getParent()));
             return $action;
         });
 
         $url = $this->get(AdminUrlGenerator::class)
             ->unsetAll()
-            ->setController( $this->container->get("parameter_bag")->get("easy_menu.menu.crud") )
+            ->setController($this->container->get("parameter_bag")->get("easy_menu.menu.crud"))
             ->setAction(Action::INDEX)
             ->generateUrl();
         $goBack = Action::new('goBack', 'easy.menu.admin.crud.label.menu_item.go_back')
@@ -94,13 +97,14 @@ abstract class MenuItemCrudController extends AbstractCrudController
     {
         $queryBuilder = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
         if (!empty($this->container->get("request_stack")->getCurrentRequest()->query->get('fromMenuId'))) {
-            $menu = $this->getDoctrine()->getRepository( $this->container->get("parameter_bag")->get("easy_menu.menu.class") )->find( $this->container->get("request_stack")->getCurrentRequest()->query->get('fromMenuId') );
+            $menu = $this->managerRegistry->getRepository($this->container->get("parameter_bag")->get("easy_menu.menu.class"))->find($this->container->get("request_stack")->getCurrentRequest()->query->get('fromMenuId'));
             $queryBuilder->andWhere('entity.menu = :menu');
             $queryBuilder->setParameter('menu', $menu);
         }
+
         $queryBuilder
-            ->orderBy("entity.menu", "ASC")
-            ->addOrderBy("entity.lft", "ASC")
+            ->orderBy("entity.menu", \Doctrine\Common\Collections\Criteria::ASC)
+            ->addOrderBy("entity.lft", \Doctrine\Common\Collections\Criteria::ASC)
         ;
         return $queryBuilder;
     }
@@ -108,12 +112,13 @@ abstract class MenuItemCrudController extends AbstractCrudController
 
     public function createEntity(string $entityFqcn)
     {
-        parse_str(parse_url( $this->container->get("request_stack")->getCurrentRequest()->query->get('referrer'))['query'], $params);
+        parse_str(parse_url((string) $this->container->get("request_stack")->getCurrentRequest()->query->get('referrer'))['query'], $params);
         $entity = new $entityFqcn();
         if (!empty($params['fromMenuId'])) {
-            $menu = $this->getDoctrine()->getRepository( $this->container->get("parameter_bag")->get("easy_menu.menu.class") )->find( $params['fromMenuId'] );
-            $entity->setMenu( $menu );
+            $menu = $this->managerRegistry->getRepository($this->container->get("parameter_bag")->get("easy_menu.menu.class"))->find($params['fromMenuId']);
+            $entity->setMenu($menu);
         }
+
         return $entity;
     }
 
@@ -139,12 +144,13 @@ abstract class MenuItemCrudController extends AbstractCrudController
             ->setColumns(12);
 
         yield AssociationField::new("parent", "easy.menu.admin.field.parent")
-            ->setQueryBuilder(function (QueryBuilder $queryBuilder) use ($subject) {
+            ->setQueryBuilder(static function (QueryBuilder $queryBuilder) use ($subject) {
                 $rootAllias = $queryBuilder->getAllAliases()[0];
-                if($subject->getPrimaryKeyValue()){
+                if ($subject->getPrimaryKeyValue()) {
                     $queryBuilder->andWhere(sprintf("%s.id != :currentID", $rootAllias))
                         ->setParameter("currentID", $subject->getPrimaryKeyValue());
                 }
+
                 $queryBuilder->andWhere(sprintf("%s.menu = :menu", $rootAllias))
                     ->setParameter("menu", $subject->getInstance()->getMenu());
                 return $queryBuilder;
@@ -173,7 +179,5 @@ abstract class MenuItemCrudController extends AbstractCrudController
             ->renderExpanded(true)
             ->renderAsBadges(true)
             ->setColumns(6);
-
     }
-
 }

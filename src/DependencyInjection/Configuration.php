@@ -12,7 +12,6 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
-
 /**
  * This is the class that validates and merges configuration from your app/config files.
  *
@@ -38,11 +37,12 @@ class Configuration implements ConfigurationInterface
                             ->isRequired()
                             ->validate()
                                 ->ifString()
-                                ->then(function($value) {
+                                ->then(function ($value) {
                                     if (!class_exists($value) || !is_a($value, MenuEntity::class, true)) {
                                         throw new InvalidConfigurationException(sprintf(
                                             'Entry class must be a valid class extending %s. "%s" given.',
-                                            MenuEntity::class, $value
+                                            MenuEntity::class,
+                                            $value
                                         ));
                                     }
                                     return $value;
@@ -53,11 +53,12 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue(MenuRepository::class)
                             ->validate()
                                 ->ifString()
-                                ->then(function($value) {
+                                ->then(function ($value) {
                                     if (!class_exists($value) || !is_a($value, MenuRepository::class, true)) {
                                         throw new InvalidConfigurationException(sprintf(
                                             'Entry repository must be a valid class extending %s. "%s" given.',
-                                            MenuRepository::class, $value
+                                            MenuRepository::class,
+                                            $value
                                         ));
                                     }
                                     return $value;
@@ -68,11 +69,12 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue(MenuCrudController::class)
                             ->validate()
                                 ->ifString()
-                                ->then(function($value) {
+                                ->then(function ($value) {
                                     if (!class_exists($value) || !is_a($value, MenuCrudController::class, true)) {
                                         throw new InvalidConfigurationException(sprintf(
                                             'Entry crud controller must be a valid class extending %s. "%s" given.',
-                                            MenuCrudController::class, $value
+                                            MenuCrudController::class,
+                                            $value
                                         ));
                                     }
                                     return $value;
@@ -88,11 +90,12 @@ class Configuration implements ConfigurationInterface
                             ->isRequired()
                             ->validate()
                                 ->ifString()
-                                ->then(function($value) {
+                                ->then(function ($value) {
                                     if (!class_exists($value) || !is_a($value, MenuItemEntity::class, true)) {
                                         throw new InvalidConfigurationException(sprintf(
                                             'Category class must be a valid class extending %s. "%s" given.',
-                                            MenuItemEntity::class, $value
+                                            MenuItemEntity::class,
+                                            $value
                                         ));
                                     }
                                     return $value;
@@ -103,11 +106,12 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue(MenuItemRepository::class)
                             ->validate()
                                 ->ifString()
-                                ->then(function($value) {
+                                ->then(function ($value) {
                                     if (!class_exists($value) || !is_a($value, MenuItemRepository::class, true)) {
                                         throw new InvalidConfigurationException(sprintf(
                                             'Category repository must be a valid class extending %s. "%s" given.',
-                                            MenuItemRepository::class, $value
+                                            MenuItemRepository::class,
+                                            $value
                                         ));
                                     }
                                     return $value;
@@ -118,11 +122,12 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue(MenuItemCrudController::class)
                             ->validate()
                                 ->ifString()
-                                ->then(function($value) {
+                                ->then(function ($value) {
                                     if (!class_exists($value) || !is_a($value, MenuItemCrudController::class, true)) {
                                         throw new InvalidConfigurationException(sprintf(
                                             'Category crud controller must be a valid class extending %s. "%s" given.',
-                                            MenuItemCrudController::class, $value
+                                            MenuItemCrudController::class,
+                                            $value
                                         ));
                                     }
                                     return $value;

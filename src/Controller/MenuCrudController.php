@@ -19,7 +19,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class MenuCrudController extends AbstractCrudController
 {
-    const TRANSLATE_TITLE_PREFIX =  "easy.menu.admin.crud.title.menu.";
+    /**
+     * @var string
+     */
+    public const TRANSLATE_TITLE_PREFIX =  "easy.menu.admin.crud.title.menu.";
 
     public function configureCrud(Crud $crud): Crud
     {
@@ -51,9 +54,7 @@ abstract class MenuCrudController extends AbstractCrudController
 
         // Add a link to the Item Crud Controller to manage selected menu items
         $viewItems = Action::new('goToItems', 'easy.menu.admin.crud.label.menu.manage_items', 'fas fa-list')
-            ->displayIf(static function (Menu $entity) {
-                return $entity->getId();
-            })
+            ->displayIf(static fn(Menu $entity) => $entity->getId())
             ->linkToCrudAction("goToItems");
 
         $actions
@@ -67,7 +68,7 @@ abstract class MenuCrudController extends AbstractCrudController
     {
         $url = $this->get(AdminUrlGenerator::class)
             ->unsetAll()
-            ->setController($this->container->get("parameter_bag")->get("easy_menu.menu_item.crud") )
+            ->setController($this->container->get("parameter_bag")->get("easy_menu.menu_item.crud"))
             ->setAction(Action::INDEX)
             ->set('fromMenuId', $context->getEntity()->getInstance()->getId())
             ->generateUrl();
