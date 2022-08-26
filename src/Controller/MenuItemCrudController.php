@@ -12,7 +12,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
@@ -21,7 +20,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\ChoiceFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
@@ -42,6 +40,8 @@ abstract class MenuItemCrudController extends AbstractCrudController
     {
         return $crud
             ->addFormTheme('@EasyFields/form/association_widget.html.twig')
+            ->addFormTheme('@EasyCommon/crud/custom_panel.html.twig')
+
             ->setPageTitle(Crud::PAGE_INDEX, self::TRANSLATE_TITLE_PREFIX.Crud::PAGE_INDEX)
             ->setPageTitle(Crud::PAGE_EDIT, self::TRANSLATE_TITLE_PREFIX.Crud::PAGE_EDIT)
             ->setPageTitle(Crud::PAGE_NEW, self::TRANSLATE_TITLE_PREFIX.Crud::PAGE_NEW)
@@ -51,12 +51,6 @@ abstract class MenuItemCrudController extends AbstractCrudController
 
 //            ->overrideTemplate('crud/index', '@EasyFields/crud/tree.html.twig')
         ;
-    }
-
-    public function configureFilters(Filters $filters): Filters
-    {
-        $filters->add(ChoiceFilter::new('state', 'Status')->setChoices(ThreeStateStatusEnum::toArray()));
-        return $filters;
     }
 
     public function configureActions(Actions $actions): Actions

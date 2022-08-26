@@ -2,12 +2,10 @@
 
 namespace Adeliom\EasyMenuBundle\Controller;
 
-use Adeliom\EasyCommonBundle\Enum\ThreeStateStatusEnum;
 use App\Entity\EasyMenu\Menu;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -15,7 +13,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\ChoiceFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,6 +27,7 @@ abstract class MenuCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
+            ->addFormTheme('@EasyCommon/crud/custom_panel.html.twig')
             ->setPageTitle(Crud::PAGE_INDEX, self::TRANSLATE_TITLE_PREFIX.Crud::PAGE_INDEX)
             ->setPageTitle(Crud::PAGE_EDIT, self::TRANSLATE_TITLE_PREFIX.Crud::PAGE_EDIT)
             ->setPageTitle(Crud::PAGE_NEW, self::TRANSLATE_TITLE_PREFIX.Crud::PAGE_NEW)
@@ -37,12 +35,6 @@ abstract class MenuCrudController extends AbstractCrudController
             ->setEntityLabelInSingular('easy.menu.admin.crud.label.menu.singular')
             ->setEntityLabelInPlural('easy.menu.admin.crud.label.menu.plural')
         ;
-    }
-
-    public function configureFilters(Filters $filters): Filters
-    {
-        $filters->add(ChoiceFilter::new('state', 'Status')->setChoices(ThreeStateStatusEnum::toArray()));
-        return $filters;
     }
 
     public function configureActions(Actions $actions): Actions
