@@ -5,62 +5,55 @@ namespace Adeliom\EasyMenuBundle\Entity;
 use Adeliom\EasyCommonBundle\Traits\EntityIdTrait;
 use Adeliom\EasyCommonBundle\Traits\EntityStatusTrait;
 use Adeliom\EasyCommonBundle\Traits\EntityTimestampableTrait;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-/**
- * @UniqueEntity("code")
- * @ORM\HasLifecycleCallbacks()
- * @ORM\MappedSuperclass(repositoryClass="Adeliom\EasyMenuBundle\Repository\MenuRepository")
- */
-class MenuEntity {
-
+#[UniqueEntity('code')]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\MappedSuperclass(repositoryClass: \Adeliom\EasyMenuBundle\Repository\MenuRepository::class)]
+class MenuEntity implements \Stringable
+{
     use EntityIdTrait;
     use EntityTimestampableTrait {
-        EntityTimestampableTrait::__construct as private __TimestampableConstruct;
+        EntityTimestampableTrait::__construct as private TimestampableConstruct;
     }
-
     use EntityStatusTrait;
+    public $menuItems;
 
     /**
-     * @var MenuItemEntity[] | null
+     * @var MenuItemEntity[]|null
      */
     protected $items;
 
     /**
      * @var string
-     * @ORM\Column(name="code", type="string", length=30, nullable=false)
      **/
-    protected $code;
+    #[ORM\Column(name: 'code', type: \Doctrine\DBAL\Types\Types::STRING, length: 30)]
+    protected ?string $code = null;
 
     /**
-     * @var string | null
-     *
-     * @ORM\Column(name="name", type="string", length=255, nullable=true)
+     * @var string|null
      */
-    protected $name;
+    #[ORM\Column(name: 'name', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: true)]
+    protected ?string $name = null;
 
     /**
-     * @var MenuItemEntity | null
+     * @var MenuItemEntity|null
      */
     protected $rootItem;
 
     /**
-     * Constructor
-     *
+     * Constructor.
      */
     public function __construct()
     {
-        $this->__TimestampableConstruct();
+        $this->TimestampableConstruct();
         $this->items = new ArrayCollection();
     }
 
     /**
-     * Set name
-     *
-     * @param string | null $name
+     * Set name.
      */
     public function setName(?string $name)
     {
@@ -68,9 +61,9 @@ class MenuEntity {
     }
 
     /**
-     * Get name
+     * Get name.
      *
-     * @return string | null
+     * @return string|null
      */
     public function getName()
     {
@@ -78,7 +71,7 @@ class MenuEntity {
     }
 
     /**
-     * Get menuItems
+     * Get menuItems.
      *
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
@@ -109,49 +102,34 @@ class MenuEntity {
         $item->setMenu(null);
     }
 
-    /**
-     * @ORM\PreRemove()
-     */
+    #[ORM\PreRemove]
     public function onRemove(): void
     {
         $this->setStatus(false);
     }
 
-    /**
-     * @return string
-     */
     public function getCode(): string
     {
         return $this->code;
     }
 
-    /**
-     * @param string $code
-     */
     public function setCode(string $code): void
     {
         $this->code = $code;
     }
 
-    /**
-     * @return MenuItemEntity|null
-     */
     public function getRootItem(): ?MenuItemEntity
     {
         return $this->rootItem;
     }
 
-    /**
-     * @param MenuItemEntity|null $rootItem
-     */
     public function setRootItem(?MenuItemEntity $rootItem): void
     {
         $this->rootItem = $rootItem;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return isset($this->name) ? $this->name : "";
+        return $this->name ?? '';
     }
-
 }

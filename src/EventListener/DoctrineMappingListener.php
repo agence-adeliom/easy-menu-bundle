@@ -2,7 +2,6 @@
 
 namespace Adeliom\EasyMenuBundle\EventListener;
 
-
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Events;
@@ -14,23 +13,11 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  */
 class DoctrineMappingListener implements EventSubscriber
 {
-    /**
-     * @var string
-     */
-    private $menuClass;
-
-    /**
-     * @var string
-     */
-    private $menuItemClass;
-
-    public function __construct(string $menuClass, string $menuItemClass)
+    public function __construct(private string $menuClass, private string $menuItemClass)
     {
-        $this->menuClass = $menuClass;
-        $this->menuItemClass = $menuItemClass;
     }
 
-    public function getSubscribedEvents()
+    public function getSubscribedEvents(): array
     {
         return [Events::loadClassMetadata];
     }
@@ -40,8 +27,7 @@ class DoctrineMappingListener implements EventSubscriber
         /** @var ClassMetadata $classMetadata */
         $classMetadata = $eventArgs->getClassMetadata();
 
-
-        $isMenuItem  = is_a($classMetadata->getName(), $this->menuItemClass, true);
+        $isMenuItem = is_a($classMetadata->getName(), $this->menuItemClass, true);
         $isMenu = is_a($classMetadata->getName(), $this->menuClass, true);
 
         if ($isMenuItem) {
@@ -61,8 +47,8 @@ class DoctrineMappingListener implements EventSubscriber
                 'targetEntity' => $this->menuClass,
                 'inversedBy' => 'items',
                 'orderBy' => [
-                    "position" => "ASC"
-                ]
+                    'position' => 'ASC',
+                ],
             ]);
         }
 
@@ -75,8 +61,8 @@ class DoctrineMappingListener implements EventSubscriber
                 'isOnDeleteCascade' => false,
                 'nullable' => true,
                 'orderBy' => [
-                    "position" => "ASC"
-                ]
+                    'position' => 'ASC',
+                ],
             ]);
         }
 
@@ -87,8 +73,8 @@ class DoctrineMappingListener implements EventSubscriber
                 'mappedBy' => 'parent',
                 'cascade' => ['all'],
                 'orderBy' => [
-                    "position" => "ASC"
-                ]
+                    'position' => 'ASC',
+                ],
             ]);
         }
     }
@@ -103,6 +89,5 @@ class DoctrineMappingListener implements EventSubscriber
                 'cascade' => ['all'],
             ]);
         }
-
     }
 }

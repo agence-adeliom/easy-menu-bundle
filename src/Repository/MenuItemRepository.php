@@ -8,9 +8,8 @@ use Adeliom\EasyMenuBundle\Entity\MenuItemEntity;
 use Doctrine\ORM\QueryBuilder;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
-
-class MenuItemRepository extends NestedTreeRepository {
-
+class MenuItemRepository extends NestedTreeRepository
+{
     /**
      * @var bool
      */
@@ -21,18 +20,12 @@ class MenuItemRepository extends NestedTreeRepository {
      */
     protected $cacheTtl;
 
-    /**
-     * @param array $cacheConfig
-     */
     public function setConfig(array $cacheConfig)
     {
         $this->cacheEnabled = $cacheConfig['enabled'];
-        $this->cacheTtl     = $cacheConfig['ttl'];
+        $this->cacheTtl = $cacheConfig['ttl'];
     }
 
-    /**
-     * @return QueryBuilder
-     */
     public function getPublishedQuery(): QueryBuilder
     {
         $qb = $this->createQueryBuilder('menuitem')
@@ -59,9 +52,10 @@ class MenuItemRepository extends NestedTreeRepository {
     public function getPublished(bool $returnQueryBuilder = false)
     {
         $qb = $this->getPublishedQuery();
-        if ($returnQueryBuilder){
+        if ($returnQueryBuilder) {
             return $qb;
         }
+
         return $qb->getQuery()
             ->useResultCache($this->cacheEnabled, $this->cacheTtl)
             ->getResult();
@@ -76,12 +70,12 @@ class MenuItemRepository extends NestedTreeRepository {
         $qb->andWhere('menuitem.menu = :menu')
             ->setParameter('menu', $menuEntity)
         ;
-        if ($returnQueryBuilder){
+        if ($returnQueryBuilder) {
             return $qb;
         }
+
         return $qb->getQuery()
             ->useResultCache($this->cacheEnabled, $this->cacheTtl)
             ->getResult();
     }
-
 }
