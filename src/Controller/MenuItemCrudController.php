@@ -40,7 +40,6 @@ abstract class MenuItemCrudController extends AbstractCrudController
     {
         return $crud
             ->addFormTheme('@EasyFields/form/association_widget.html.twig')
-            ->addFormTheme('@EasyCommon/crud/custom_panel.html.twig')
 
             ->setPageTitle(Crud::PAGE_INDEX, self::TRANSLATE_TITLE_PREFIX.Crud::PAGE_INDEX)
             ->setPageTitle(Crud::PAGE_EDIT, self::TRANSLATE_TITLE_PREFIX.Crud::PAGE_EDIT)
