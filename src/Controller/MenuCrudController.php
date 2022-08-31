@@ -27,7 +27,6 @@ abstract class MenuCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->addFormTheme('@EasyCommon/crud/custom_panel.html.twig')
             ->setPageTitle(Crud::PAGE_INDEX, self::TRANSLATE_TITLE_PREFIX.Crud::PAGE_INDEX)
             ->setPageTitle(Crud::PAGE_EDIT, self::TRANSLATE_TITLE_PREFIX.Crud::PAGE_EDIT)
             ->setPageTitle(Crud::PAGE_NEW, self::TRANSLATE_TITLE_PREFIX.Crud::PAGE_NEW)
