@@ -12,7 +12,7 @@ services:
     easy_menu.menu.repository:
         class: '%easy_menu.menu.repository%'
         arguments:
-            - '@Doctrine\Persistence\ManagerRegistry'
+            - '@doctrine.orm.entity_manager'
             - '%easy_menu.menu.class%'
         calls:
             - [ 'setConfig', [ '%easy_menu.cache%' ] ]
@@ -21,7 +21,7 @@ services:
     easy_menu.menu_item.repository:
         class: '%easy_menu.menu_item.repository%'
         arguments:
-            - '@Doctrine\Persistence\ManagerRegistry'
+            - '@doctrine.orm.entity_manager'
             - '%easy_menu.menu_item.class%'
         calls:
             - [ 'setConfig', [ '%easy_menu.cache%' ] ]
