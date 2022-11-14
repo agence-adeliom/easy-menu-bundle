@@ -109,15 +109,9 @@ class MenuItemEntity implements \Stringable
     #[ORM\Column(name: 'name', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
     protected ?string $name = null;
 
-    /**
-     * @var string|null
-     */
     #[ORM\Column(name: 'url', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: true)]
     protected ?string $url = null;
 
-    /**
-     * @var string|null
-     */
     #[ORM\Column(name: 'class_attribute', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: true)]
     protected ?string $classAttribute = null;
 

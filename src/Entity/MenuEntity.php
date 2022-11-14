@@ -32,9 +32,6 @@ class MenuEntity implements \Stringable
     #[ORM\Column(name: 'code', type: \Doctrine\DBAL\Types\Types::STRING, length: 30)]
     protected ?string $code = null;
 
-    /**
-     * @var string|null
-     */
     #[ORM\Column(name: 'name', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: true)]
     protected ?string $name = null;
 
