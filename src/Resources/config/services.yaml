@@ -21,7 +21,7 @@ services:
     easy_menu.menu_item.repository:
         class: '%easy_menu.menu_item.repository%'
         arguments:
-          - '@doctrine'
+            - '@doctrine'
             - '%easy_menu.menu_item.class%'
         calls:
             - [ 'setConfig', [ '%easy_menu.cache%' ] ]
