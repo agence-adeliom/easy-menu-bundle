@@ -5,10 +5,12 @@ namespace Adeliom\EasyMenuBundle\Repository;
 use Adeliom\EasyCommonBundle\Enum\ThreeStateStatusEnum;
 use Adeliom\EasyMenuBundle\Entity\MenuEntity;
 use Adeliom\EasyMenuBundle\Entity\MenuItemEntity;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
-class MenuItemRepository extends NestedTreeRepository
+class MenuItemRepository extends NestedTreeRepository implements ServiceEntityRepositoryInterface
 {
     /**
      * @var bool
@@ -19,6 +21,20 @@ class MenuItemRepository extends NestedTreeRepository
      * @var int
      */
     protected $cacheTtl;
+
+    public function __construct(ManagerRegistry $registry, string $entityClass)
+    {
+        $manager = $registry->getManagerForClass($entityClass);
+
+        if ($manager === null) {
+            throw new \LogicException(sprintf(
+                'Could not find the entity manager for class "%s". Check your Doctrine configuration to make sure it is configured to load this entity’s metadata.',
+                $entityClass
+            ));
+        }
+
+        parent::__construct($manager, $manager->getClassMetadata($entityClass));
+    }
 
     public function setConfig(array $cacheConfig)
     {
