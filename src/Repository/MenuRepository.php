@@ -5,6 +5,7 @@ namespace Adeliom\EasyMenuBundle\Repository;
 use Adeliom\EasyMenuBundle\Entity\MenuEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 
 class MenuRepository extends ServiceEntityRepository
 {
@@ -17,6 +18,20 @@ class MenuRepository extends ServiceEntityRepository
      * @var int
      */
     protected $cacheTtl;
+
+    public function __construct(ManagerRegistry $registry, string $entityClass)
+    {
+        $manager = $registry->getManagerForClass($entityClass);
+
+        if ($manager === null) {
+            throw new \LogicException(sprintf(
+                'Could not find the entity manager for class "%s". Check your Doctrine configuration to make sure it is configured to load this entity’s metadata.',
+                $entityClass
+            ));
+        }
+
+        parent::__construct($manager, $manager->getClassMetadata($entityClass));
+    }
 
     public function setConfig(array $cacheConfig)
     {
