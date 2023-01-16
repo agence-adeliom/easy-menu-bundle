@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
@@ -126,13 +127,16 @@ abstract class MenuItemCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $context = $this->container->get(AdminContextProvider::class)->getContext();
-        $subject = $context->getEntity();
+        $subject = $context?->getEntity();
 
         yield IdField::new('id')->hideOnForm();
         yield from $this->informationsFields($pageName, $subject);
     }
 
-    public function informationsFields(string $pageName, $subject): iterable
+    /**
+     * @return FieldInterface[]
+     */
+    public function informationsFields(string $pageName, object $subject): iterable
     {
         yield FormField::addPanel('easy.menu.admin.panel.information')->addCssClass('col-12');
 
