@@ -11,15 +11,10 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  * This class adds automatically the ManyToOne and OneToMany relations in Page and Category entities,
  * because it's normally impossible to do so in a mapped superclass.
  */
-class DoctrineMappingListener implements EventSubscriber
+class DoctrineMappingListener
 {
     public function __construct(private string $menuClass, private string $menuItemClass)
     {
-    }
-
-    public function getSubscribedEvents(): array
-    {
-        return [Events::loadClassMetadata];
     }
 
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs): void
@@ -45,13 +40,9 @@ class DoctrineMappingListener implements EventSubscriber
             $classMetadata->mapManyToOne([
                 'fieldName' => 'menu',
                 'targetEntity' => $this->menuClass,
-                'inversedBy' => 'items',
-                'orderBy' => [
-                    'position' => 'ASC',
-                ],
+                'inversedBy' => 'items'
             ]);
         }
-
         if (!$classMetadata->hasAssociation('parent')) {
             $classMetadata->mapManyToOne([
                 'fieldName' => 'parent',

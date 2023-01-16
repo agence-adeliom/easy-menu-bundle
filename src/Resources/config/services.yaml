@@ -32,7 +32,7 @@ services:
             - '%easy_menu.menu.class%'
             - '%easy_menu.menu_item.class%'
         tags:
-            - doctrine.event_subscriber
+            - { name: doctrine.event_listener, event: loadClassMetadata, priority: 1024 }
 
     Adeliom\EasyMenuBundle\Twig\EasyMenuExtension:
       public: true

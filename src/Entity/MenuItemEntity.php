@@ -130,15 +130,13 @@ class MenuItemEntity implements \Stringable
     /**
      * @var MenuItemEntity|null
      */
-    #[ORM\ManyToOne(targetEntity: \App\Entity\EasyMenu\MenuItem::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', onDelete: 'CASCADE')]
     #[Gedmo\TreeParent]
-    protected ?\App\Entity\EasyMenu\MenuItem $parent = null;
+    protected ?MenuItemEntity $parent = null;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection<\App\Entity\EasyMenu\MenuItem>
+     * @var \Doctrine\Common\Collections\Collection<MenuItemEntity>
      */
-    #[ORM\OneToMany(targetEntity: \App\Entity\EasyMenu\MenuItem::class, mappedBy: 'parent')]
     #[ORM\OrderBy(['lft' => 'ASC'])]
     protected \Doctrine\Common\Collections\Collection $children;
 
