@@ -209,14 +209,14 @@ class MenuItemEntity implements \Stringable
     }
 
     /**
-     * @return MenuItemEntity
+     * @return MenuItemEntity|null
      */
-    public function getParent()
+    public function getParent(): ?MenuItemEntity
     {
         return $this->parent;
     }
 
-    public function setParent(MenuItemEntity $parent)
+    public function setParent(?MenuItemEntity $parent)
     {
         $this->parent = $parent;
 
