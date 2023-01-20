@@ -9,7 +9,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
@@ -90,7 +89,7 @@ abstract class MenuCrudController extends AbstractCrudController
     /**
      * @return FieldInterface[]
      */
-    public function informationsFields(string $pageName, ?EntityDto $subject): iterable
+    public function informationsFields(string $pageName, object $subject): iterable
     {
         yield FormField::addPanel('easy.menu.admin.panel.information')->addCssClass('col-8');
         yield TextField::new('name', 'easy.menu.admin.field.name')
@@ -107,7 +106,7 @@ abstract class MenuCrudController extends AbstractCrudController
     /**
      * @return FieldInterface[]
      */
-    public function publishFields(string $pageName, ?EntityDto $subject): iterable
+    public function publishFields(string $pageName, object $subject): iterable
     {
         yield FormField::addPanel('easy.menu.admin.panel.publication')->collapsible()->addCssClass('col-4');
         yield BooleanField::new('status', 'easy.menu.admin.field.state')
