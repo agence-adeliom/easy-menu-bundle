@@ -48,12 +48,18 @@ class DoctrineMappingListener
                 'fieldName' => 'parent',
                 'targetEntity' => $this->menuItemClass,
                 'inversedBy' => 'children',
-                'cascade' => ['persist'],
-                'isOnDeleteCascade' => false,
+                'cascade' => ['persist', 'detach'],
+                'joinColumns' => [
+                    [
+                        'name' => 'parent_id',
+                        'referencedColumnName' => 'id',
+                        'onDelete' => 'CASCADE',
+                    ],
+                ],
                 'nullable' => true,
                 'orderBy' => [
                     'position' => 'ASC',
-                ],
+                ]
             ]);
         }
 
