@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -114,7 +115,10 @@ abstract class MenuItemCrudController extends AbstractCrudController
 
     public function createEntity(string $entityFqcn)
     {
-        parse_str(parse_url((string) $this->container->get('request_stack')->getCurrentRequest()->query->get('referrer'))['query'], $params);
+        /* @var AdminContext $context */
+        $context = $this->container->get(AdminContextProvider::class)->getContext();
+        parse_str(parse_url((string) $context->getReferrer())['query'], $params);
+
         $entity = new $entityFqcn();
         if (!empty($params['fromMenuId'])) {
             $menu = $this->managerRegistry->getRepository($this->container->get('parameter_bag')->get('easy_menu.menu.class'))->find($params['fromMenuId']);
