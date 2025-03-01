@@ -117,7 +117,7 @@ abstract class MenuItemCrudController extends AbstractCrudController
     {
         /* @var AdminContext $context */
         $context = $this->container->get(AdminContextProvider::class)->getContext();
-        parse_str(parse_url((string) $context->getReferrer())['query'], $params);
+        parse_str(parse_url((string) $context->getRequest()->server->get("HTTP_REFERER"))['query'], $params);
 
         $entity = new $entityFqcn();
         if (!empty($params['fromMenuId'])) {
