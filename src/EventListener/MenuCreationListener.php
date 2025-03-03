@@ -22,7 +22,7 @@ class MenuCreationListener
         $rootItem = new $this->menuItemClass();
         $rootItem->setMenu($menu);
         $rootItem->setName('Root');
-        $rootItem->setState(ThreeStateStatusEnum::PUBLISHED());
+        $rootItem->setState(ThreeStateStatusEnum::PUBLISHED);
 
         $menu->addItem($rootItem);
     }

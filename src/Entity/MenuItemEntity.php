@@ -145,7 +145,7 @@ class MenuItemEntity implements \Stringable
         $this->TimestampableConstruct();
         $this->PublishableConstruct();
         $this->children = new ArrayCollection();
-        $this->state = ThreeStateStatusEnum::PENDING();
+        $this->setState(ThreeStateStatusEnum::PENDING);
     }
 
     public function getName(): string
@@ -266,29 +266,13 @@ class MenuItemEntity implements \Stringable
      */
     public function getPublishedChildren()
     {
-        return $this->children->filter(static fn (MenuItemEntity $child) => $child->getState() == ThreeStateStatusEnum::PUBLISHED());
-    }
-
-    /**
-     * @return string|ThreeStateStatusEnum|null
-     */
-    public function getState()
-    {
-        return $this->state;
-    }
-
-    /**
-     * @param string|ThreeStateStatusEnum|null $state
-     */
-    public function setState($state): void
-    {
-        $this->state = $state;
+        return $this->children->filter(static fn (MenuItemEntity $child) => $child->getState() == ThreeStateStatusEnum::PUBLISHED);
     }
 
     #[ORM\PreRemove]
     public function onRemove(): void
     {
-        $this->setState(ThreeStateStatusEnum::UNPUBLISHED());
+        $this->setState(ThreeStateStatusEnum::UNPUBLISHED);
     }
 
     /**
