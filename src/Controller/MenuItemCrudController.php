@@ -3,7 +3,6 @@
 namespace Adeliom\EasyMenuBundle\Controller;
 
 use Adeliom\EasyCommonBundle\Enum\ThreeStateStatusEnum;
-use Adeliom\EasyFieldsBundle\Admin\Field\EnumField;
 use Adeliom\EasyFieldsBundle\Admin\Field\PositionSortableField;
 use Adeliom\EasyFieldsBundle\Traits\Admin\PositionSortableActionTrait;
 use Doctrine\ORM\QueryBuilder;
@@ -17,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -178,8 +178,8 @@ abstract class MenuItemCrudController extends AbstractCrudController
             ->setColumns(6)
             ->onlyOnIndex();
 
-        yield EnumField::new('state', 'easy.page.admin.field.state')
-            ->setEnum(ThreeStateStatusEnum::class)
+        yield ChoiceField::new('state', 'easy.page.admin.field.state')
+            ->setChoices(ThreeStateStatusEnum::cases())
             ->setRequired(true)
             ->renderExpanded(true)
             ->renderAsBadges(true)
