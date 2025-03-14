@@ -54,12 +54,12 @@ class DoctrineMappingListener
                         'name' => 'parent_id',
                         'referencedColumnName' => 'id',
                         'onDelete' => 'CASCADE',
+                        'nullable' => true,
+                        'orderBy' => [
+                            'position' => 'ASC',
+                        ]
                     ],
                 ],
-                'nullable' => true,
-                'orderBy' => [
-                    'position' => 'ASC',
-                ]
             ]);
         }
 
