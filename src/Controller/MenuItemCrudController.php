@@ -116,7 +116,7 @@ abstract class MenuItemCrudController extends AbstractCrudController
     {
         parse_str(parse_url((string) $this->container->get('request_stack')->getCurrentRequest()->query->get('referrer'))['query'], $params);
         $entity = new $entityFqcn();
-        if (!empty($params['fromMenuId'])) {
+        if (isset($params['fromMenuId']) && ($params['fromMenuId'] !== [] && ($params['fromMenuId'] !== '' && $params['fromMenuId'] !== '0'))) {
             $menu = $this->managerRegistry->getRepository($this->container->get('parameter_bag')->get('easy_menu.menu.class'))->find($params['fromMenuId']);
             $entity->setMenu($menu);
         }

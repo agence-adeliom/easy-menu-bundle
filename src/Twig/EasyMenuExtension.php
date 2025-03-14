@@ -16,22 +16,10 @@ use Twig\TwigFunction;
 class EasyMenuExtension extends AbstractExtension
 {
     public function __construct(
-        /**
-         * @readonly
-         */
-        private Environment $twig,
-        /**
-         * @readonly
-         */
-        private EntityManagerInterface $em,
-        /**
-         * @readonly
-         */
-        private string $menuClass,
-        /**
-         * @readonly
-         */
-        private string $menuItemClass
+        private readonly Environment $twig,
+        private readonly EntityManagerInterface $em,
+        private readonly string $menuClass,
+        private readonly string $menuItemClass
     ) {
     }
 

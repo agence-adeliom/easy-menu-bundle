@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  */
 class DoctrineMappingListener
 {
-    public function __construct(private string $menuClass, private string $menuItemClass)
+    public function __construct(private readonly string $menuClass, private readonly string $menuItemClass)
     {
     }
 
@@ -43,6 +43,7 @@ class DoctrineMappingListener
                 'inversedBy' => 'items'
             ]);
         }
+
         if (!$classMetadata->hasAssociation('parent')) {
             $classMetadata->mapManyToOne([
                 'fieldName' => 'parent',
