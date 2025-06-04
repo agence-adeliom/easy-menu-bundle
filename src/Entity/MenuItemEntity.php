@@ -291,7 +291,7 @@ class MenuItemEntity implements \Stringable
         return !is_null($this->parent);
     }
 
-    public function getParents($parents = [], $parent = null)
+    public function getParents($parents = [], ?MenuItemEntity $parent = null)
     {
         if (empty($parent)) {
             $parents[] = (string) $this;
