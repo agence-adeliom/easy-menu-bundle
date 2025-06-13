@@ -92,7 +92,7 @@ abstract class MenuCrudController extends AbstractCrudController
      */
     public function informationsFields(string $pageName, ?EntityDto $subject): iterable
     {
-        yield FormField::addPanel('easy.menu.admin.panel.information')->addCssClass('col-8');
+        yield FormField::addFieldset('easy.menu.admin.panel.information')->addCssClass('col-8');
         yield TextField::new('name', 'easy.menu.admin.field.name')
             ->setRequired(false)
             ->setColumns(12);
@@ -109,7 +109,7 @@ abstract class MenuCrudController extends AbstractCrudController
      */
     public function publishFields(string $pageName, ?EntityDto $subject): iterable
     {
-        yield FormField::addPanel('easy.menu.admin.panel.publication')->collapsible()->addCssClass('col-4');
+        yield FormField::addFieldset('easy.menu.admin.panel.publication')->collapsible()->addCssClass('col-4');
         yield BooleanField::new('status', 'easy.menu.admin.field.state')
             ->setRequired(false)
             ->renderAsSwitch(true);

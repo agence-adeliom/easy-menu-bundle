@@ -138,7 +138,7 @@ abstract class MenuItemCrudController extends AbstractCrudController
      */
     public function informationsFields(string $pageName, ?EntityDto $subject): iterable
     {
-        yield FormField::addPanel('easy.menu.admin.panel.information')->addCssClass('col-12');
+        yield FormField::addFieldset('easy.menu.admin.panel.information')->addCssClass('col-12');
 
         yield TextField::new('flattenParents', 'easy.menu.admin.field.flattenParents')
             ->onlyOnIndex();
