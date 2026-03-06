@@ -30,11 +30,17 @@
         "easycorp/easyadmin-bundle": "^3.4 || ^v4.0",
         "agence-adeliom/easy-common-bundle": "^3.1",
         "agence-adeliom/easy-fields-bundle": "^3.1",
+        "symfony/yaml": "^6.4 || ^7.0",
         "stof/doctrine-extensions-bundle": "^1.13"
     },
     "autoload": {
         "psr-4": {
             "Adeliom\\EasyMenuBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Adeliom\\EasyMenuBundle\\Tests\\": "tests/"
         }
     },
     "minimum-stability": "dev",

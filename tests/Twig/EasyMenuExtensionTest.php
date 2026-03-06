@@ -115,17 +115,19 @@ final class EasyMenuExtensionTest extends TestCase
     {
         $twig = $this->createMock(Environment::class);
         $em = $this->createMock(EntityManagerInterface::class);
+        $menuRepository = new class() {
+            public function findOneByCode(string $code): ?TestMenu
+            {
+                TestCase::assertSame('missing', $code);
+
+                return null;
+            }
+        };
+
         $em->expects(self::once())
             ->method('getRepository')
             ->with(TestMenu::class)
-            ->willReturn(new class() {
-                public function findOneByCode(string $code): ?TestMenu
-                {
-                    TestCase::assertSame('missing', $code);
-
-                    return null;
-                }
-            });
+            ->willReturnCallback(static fn () => $menuRepository);
 
         $extension = new EasyMenuExtension($twig, $em, TestMenu::class, TestMenuItem::class);
 
@@ -149,21 +151,23 @@ final class EasyMenuExtensionTest extends TestCase
         $twig->expects(self::never())->method('render');
 
         $em = $this->createMock(EntityManagerInterface::class);
+        $menuRepository = new class($menu) {
+            public function __construct(private TestMenu $menu)
+            {
+            }
+
+            public function findOneByCode(string $code): TestMenu
+            {
+                TestCase::assertSame('header', $code);
+
+                return $this->menu;
+            }
+        };
+
         $em->expects(self::once())
             ->method('getRepository')
             ->with(TestMenu::class)
-            ->willReturn(new class($menu) {
-                public function __construct(private TestMenu $menu)
-                {
-                }
-
-                public function findOneByCode(string $code): TestMenu
-                {
-                    TestCase::assertSame('header', $code);
-
-                    return $this->menu;
-                }
-            });
+            ->willReturnCallback(static fn () => $menuRepository);
 
         $extension = new EasyMenuExtension($twig, $em, TestMenu::class, TestMenuItem::class);
 
