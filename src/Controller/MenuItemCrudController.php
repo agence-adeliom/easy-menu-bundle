@@ -112,7 +112,7 @@ abstract class MenuItemCrudController extends AbstractCrudController
         return $queryBuilder;
     }
 
-    public function createEntity(string $entityFqcn)
+    public function createEntity(string $entityFqcn): object
     {
         parse_str(parse_url((string) $this->container->get('request_stack')->getCurrentRequest()->query->get('referrer'))['query'], $params);
         $entity = new $entityFqcn();
