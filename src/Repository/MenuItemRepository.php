@@ -1,26 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Adeliom\EasyMenuBundle\Repository;
 
 use Adeliom\EasyCommonBundle\Enum\ThreeStateStatusEnum;
 use Adeliom\EasyMenuBundle\Entity\MenuEntity;
 use Adeliom\EasyMenuBundle\Entity\MenuItemEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 class MenuItemRepository extends NestedTreeRepository implements ServiceEntityRepositoryInterface
 {
-    /**
-     * @var bool
-     */
-    protected $cacheEnabled = false;
-
-    /**
-     * @var int
-     */
-    protected $cacheTtl;
+    protected bool $cacheEnabled = false;
+    protected int $cacheTtl = 0;
 
     public function __construct(ManagerRegistry $registry, string $entityClass)
     {
@@ -36,7 +32,10 @@ class MenuItemRepository extends NestedTreeRepository implements ServiceEntityRe
         parent::__construct($manager, $manager->getClassMetadata($entityClass));
     }
 
-    public function setConfig(array $cacheConfig)
+    /**
+     * @param array{enabled: bool, ttl: int} $cacheConfig
+     */
+    public function setConfig(array $cacheConfig): void
     {
         $this->cacheEnabled = $cacheConfig['enabled'];
         $this->cacheTtl = $cacheConfig['ttl'];
@@ -44,54 +43,65 @@ class MenuItemRepository extends NestedTreeRepository implements ServiceEntityRe
 
     public function getPublishedQuery(): QueryBuilder
     {
-        $qb = $this->createQueryBuilder('menuitem')
+        $queryBuilder = $this->createQueryBuilder('menuitem')
             ->where('menuitem.state = :state')
-            ->andWhere('menuitem.publishDate < :publishDate')
-        ;
+            ->andWhere('menuitem.publishDate < :publishDate');
 
-        $orModule = $qb->expr()->orx();
-        $orModule->add($qb->expr()->gt('menuitem.unpublishDate', ':unpublishDate'));
-        $orModule->add($qb->expr()->isNull('menuitem.unpublishDate'));
+        $orExpression = $queryBuilder->expr()->orx();
+        $orExpression->add($queryBuilder->expr()->gt('menuitem.unpublishDate', ':unpublishDate'));
+        $orExpression->add($queryBuilder->expr()->isNull('menuitem.unpublishDate'));
 
-        $qb->andWhere($orModule);
+        $queryBuilder->andWhere($orExpression);
+        $queryBuilder->setParameter('state', ThreeStateStatusEnum::PUBLISHED);
+        $queryBuilder->setParameter('publishDate', new \DateTime());
+        $queryBuilder->setParameter('unpublishDate', new \DateTime());
 
-        $qb->setParameter('state', ThreeStateStatusEnum::PUBLISHED);
-        $qb->setParameter('publishDate', new \DateTime());
-        $qb->setParameter('unpublishDate', new \DateTime());
+        return $queryBuilder;
+    }
 
-        return $qb;
+    /**
+     * @return MenuItemEntity[]|QueryBuilder
+     */
+    public function getPublished(bool $returnQueryBuilder = false): array|QueryBuilder
+    {
+        $queryBuilder = $this->getPublishedQuery();
+        if ($returnQueryBuilder) {
+            return $queryBuilder;
+        }
+
+        return $this->fetchResults($queryBuilder);
+    }
+
+    /**
+     * @return MenuItemEntity[]|QueryBuilder
+     */
+    public function getByMenu(MenuEntity $menuEntity, bool $returnQueryBuilder = false): array|QueryBuilder
+    {
+        $queryBuilder = $this->getPublishedQuery();
+        $queryBuilder->andWhere('menuitem.menu = :menu')
+            ->setParameter('menu', $menuEntity);
+
+        if ($returnQueryBuilder) {
+            return $queryBuilder;
+        }
+
+        return $this->fetchResults($queryBuilder);
     }
 
     /**
      * @return MenuItemEntity[]
      */
-    public function getPublished(bool $returnQueryBuilder = false)
+    protected function fetchResults(QueryBuilder $queryBuilder): array
     {
-        $qb = $this->getPublishedQuery();
-        if ($returnQueryBuilder) {
-            return $qb;
-        }
-
-        $qb = $this->cacheEnabled ? $qb->getQuery()->enableResultCache($this->cacheTtl) : $qb->getQuery()->disableResultCache();
-
-        return $qb->getResult();
+        return $this->configureCache($queryBuilder->getQuery())->getResult();
     }
 
-    /**
-     * @return MenuItemEntity[]
-     */
-    public function getByMenu(MenuEntity $menuEntity, bool $returnQueryBuilder = false)
+    protected function configureCache(AbstractQuery $query): AbstractQuery
     {
-        $qb = $this->getPublishedQuery();
-        $qb->andWhere('menuitem.menu = :menu')
-            ->setParameter('menu', $menuEntity)
-        ;
-        if ($returnQueryBuilder) {
-            return $qb;
+        if ($this->cacheEnabled) {
+            return $query->enableResultCache($this->cacheTtl);
         }
 
-        $qb = $this->cacheEnabled ? $qb->getQuery()->enableResultCache($this->cacheTtl) : $qb->getQuery()->disableResultCache();
-
-        return $qb->getResult();
+        return $query->disableResultCache();
     }
 }

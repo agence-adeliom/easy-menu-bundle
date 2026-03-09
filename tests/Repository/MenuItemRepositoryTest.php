@@ -7,8 +7,6 @@ namespace Adeliom\EasyMenuBundle\Tests\Repository;
 use Adeliom\EasyCommonBundle\Enum\ThreeStateStatusEnum;
 use Adeliom\EasyMenuBundle\Entity\MenuEntity;
 use Adeliom\EasyMenuBundle\Repository\MenuItemRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -58,15 +56,14 @@ final class MenuItemRepositoryTest extends TestCase
 
     public function testGetPublishedReturnsBuilderOrCachedResultsDependingOnFlag(): void
     {
-        $query = $this->createMock(Query::class);
-        $query->expects(self::once())->method('enableResultCache')->with(120)->willReturnSelf();
-        $query->expects(self::once())->method('getResult')->willReturn(['item']);
-
-        $repository = new MenuItemRepositoryHarness($this->createConfiguredBuilder($query));
+        $repository = new MenuItemRepositoryHarness($this->createConfiguredBuilder());
         $repository->setConfig(['enabled' => true, 'ttl' => 120]);
+        $repository->setResults(['item']);
 
         self::assertInstanceOf(QueryBuilder::class, $repository->getPublished(true));
         self::assertSame(['item'], $repository->getPublished());
+        self::assertTrue($repository->wasCacheEnabled());
+        self::assertSame(120, $repository->getObservedCacheTtl());
     }
 
     public function testGetByMenuReturnsBuilderOrResultsDependingOnFlagAndCache(): void
@@ -98,11 +95,7 @@ final class MenuItemRepositoryTest extends TestCase
     public function testGetByMenuReturnsResultsWhenQueryBuilderIsNotRequested(): void
     {
         $menu = new MenuEntity();
-        $query = $this->createMock(Query::class);
-        $query->expects(self::once())->method('disableResultCache')->willReturnSelf();
-        $query->expects(self::once())->method('getResult')->willReturn(['item']);
-
-        $builder = $this->createConfiguredBuilder($query);
+        $builder = $this->createConfiguredBuilder();
         $builder->expects(self::exactly(3))->method('andWhere')->willReturnSelf();
         $parameters = [];
         $builder->expects(self::exactly(4))->method('setParameter')
@@ -114,6 +107,7 @@ final class MenuItemRepositoryTest extends TestCase
 
         $repository = new MenuItemRepositoryHarness($builder);
         $repository->setConfig(['enabled' => false, 'ttl' => 300]);
+        $repository->setResults(['item']);
 
         self::assertSame(['item'], $repository->getByMenu($menu));
         self::assertSame('state', $parameters[0][0]);
@@ -123,19 +117,20 @@ final class MenuItemRepositoryTest extends TestCase
         self::assertSame('unpublishDate', $parameters[2][0]);
         self::assertInstanceOf(\DateTime::class, $parameters[2][1]);
         self::assertSame(['menu', $menu], $parameters[3]);
+        self::assertFalse($repository->wasCacheEnabled());
+        self::assertSame(300, $repository->getObservedCacheTtl());
     }
 
-    private function createConfiguredBuilder(?Query $query = null): QueryBuilder
+    private function createConfiguredBuilder(): QueryBuilder
     {
         $builder = $this->getMockBuilder(QueryBuilder::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['where', 'andWhere', 'setParameter', 'getQuery', 'expr'])
+            ->onlyMethods(['where', 'andWhere', 'setParameter', 'expr'])
             ->getMock();
 
         $builder->method('where')->willReturnSelf();
         $builder->method('andWhere')->willReturnSelf();
         $builder->method('setParameter')->willReturnSelf();
-        $builder->method('getQuery')->willReturn($query ?? $this->createMock(Query::class));
         $builder->method('expr')->willReturn(new Expr());
 
         return $builder;
@@ -144,6 +139,11 @@ final class MenuItemRepositoryTest extends TestCase
 
 final class MenuItemRepositoryHarness extends MenuItemRepository
 {
+    /** @var list<mixed> */
+    private array $results = [];
+    private ?bool $observedCacheEnabled = null;
+    private ?int $observedCacheTtl = null;
+
     public function __construct(private QueryBuilder $builder)
     {
     }
@@ -151,5 +151,31 @@ final class MenuItemRepositoryHarness extends MenuItemRepository
     public function createQueryBuilder($alias, $indexBy = null): QueryBuilder
     {
         return $this->builder;
+    }
+
+    /**
+     * @param list<mixed> $results
+     */
+    public function setResults(array $results): void
+    {
+        $this->results = $results;
+    }
+
+    public function wasCacheEnabled(): bool
+    {
+        return $this->observedCacheEnabled ?? false;
+    }
+
+    public function getObservedCacheTtl(): ?int
+    {
+        return $this->observedCacheTtl;
+    }
+
+    protected function fetchResults(QueryBuilder $queryBuilder): array
+    {
+        $this->observedCacheEnabled = $this->cacheEnabled;
+        $this->observedCacheTtl = $this->cacheTtl;
+
+        return $this->results;
     }
 }

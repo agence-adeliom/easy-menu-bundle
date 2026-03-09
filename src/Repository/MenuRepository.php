@@ -1,25 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Adeliom\EasyMenuBundle\Repository;
 
 use Adeliom\EasyMenuBundle\Entity\MenuEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\Persistence\ManagerRegistry;
 
 class MenuRepository extends ServiceEntityRepository
 {
-    /**
-     * @var bool
-     */
-    protected $cacheEnabled = false;
+    protected bool $cacheEnabled = false;
+    protected int $cacheTtl = 0;
 
     /**
-     * @var int
+     * @param array{enabled: bool, ttl: int} $cacheConfig
      */
-    protected $cacheTtl;
-
-    public function setConfig(array $cacheConfig)
+    public function setConfig(array $cacheConfig): void
     {
         $this->cacheEnabled = $cacheConfig['enabled'];
         $this->cacheTtl = $cacheConfig['ttl'];
@@ -27,24 +25,36 @@ class MenuRepository extends ServiceEntityRepository
 
     public function getPublishedQuery(): QueryBuilder
     {
-        $qb = $this->createQueryBuilder('menu')
-            ->where('menu.status = :status')
-        ;
+        $queryBuilder = $this->createQueryBuilder('menu')
+            ->where('menu.status = :status');
 
-        $qb->setParameter('status', true);
+        $queryBuilder->setParameter('status', true);
 
-        return $qb;
+        return $queryBuilder;
     }
 
     /**
      * @return MenuEntity[]
      */
-    public function getPublished()
+    public function getPublished(): array
     {
-        $qb = $this->getPublishedQuery();
+        return $this->fetchResults($this->getPublishedQuery());
+    }
 
-        $qb = $this->cacheEnabled ? $qb->getQuery()->enableResultCache($this->cacheTtl) : $qb->getQuery()->disableResultCache();
+    /**
+     * @return MenuEntity[]
+     */
+    protected function fetchResults(QueryBuilder $queryBuilder): array
+    {
+        return $this->configureCache($queryBuilder->getQuery())->getResult();
+    }
 
-        return $qb->getResult();
+    protected function configureCache(AbstractQuery $query): AbstractQuery
+    {
+        if ($this->cacheEnabled) {
+            return $query->enableResultCache($this->cacheTtl);
+        }
+
+        return $query->disableResultCache();
     }
 }
