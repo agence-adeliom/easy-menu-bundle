@@ -8,6 +8,8 @@ use Adeliom\EasyMenuBundle\Exceptions\MenuNotFoundException;
 use Adeliom\EasyMenuBundle\Exceptions\TemplateNotFoundException;
 use Adeliom\EasyMenuBundle\Tests\Fixtures\Entity\TestMenu;
 use Adeliom\EasyMenuBundle\Tests\Fixtures\Entity\TestMenuItem;
+use Adeliom\EasyMenuBundle\Tests\Fixtures\Repository\TestMenuItemRepository;
+use Adeliom\EasyMenuBundle\Tests\Fixtures\Repository\TestTwigMenuRepository;
 use Adeliom\EasyMenuBundle\Twig\EasyMenuExtension;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -58,31 +60,23 @@ final class EasyMenuExtensionTest extends TestCase
             }))
             ->willReturn('<nav>header</nav>');
 
-        $menuRepository = new class($menu) {
-            public function __construct(private TestMenu $menu)
-            {
-            }
+        $menuRepository = $this->getMockBuilder(TestTwigMenuRepository::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['findOneByCode'])
+            ->getMock();
+        $menuRepository->expects(self::once())
+            ->method('findOneByCode')
+            ->with('header')
+            ->willReturn($menu);
 
-            public function findOneByCode(string $code): TestMenu
-            {
-                TestCase::assertSame('header', $code);
-
-                return $this->menu;
-            }
-        };
-
-        $menuItemRepository = new class($rootItem, $menu) {
-            public function __construct(private TestMenuItem $item, private TestMenu $menu)
-            {
-            }
-
-            public function findOneBy(array $criteria): TestMenuItem
-            {
-                TestCase::assertSame(['menu' => $this->menu, 'parent' => null], $criteria);
-
-                return $this->item;
-            }
-        };
+        $menuItemRepository = $this->getMockBuilder(TestMenuItemRepository::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['findOneBy'])
+            ->getMock();
+        $menuItemRepository->expects(self::once())
+            ->method('findOneBy')
+            ->with(['menu' => $menu, 'parent' => null])
+            ->willReturn($rootItem);
 
         $em = $this->createMock(EntityManagerInterface::class);
         $requestedRepositories = [];
@@ -115,14 +109,14 @@ final class EasyMenuExtensionTest extends TestCase
     {
         $twig = $this->createMock(Environment::class);
         $em = $this->createMock(EntityManagerInterface::class);
-        $menuRepository = new class() {
-            public function findOneByCode(string $code): ?TestMenu
-            {
-                TestCase::assertSame('missing', $code);
-
-                return null;
-            }
-        };
+        $menuRepository = $this->getMockBuilder(TestTwigMenuRepository::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['findOneByCode'])
+            ->getMock();
+        $menuRepository->expects(self::once())
+            ->method('findOneByCode')
+            ->with('missing')
+            ->willReturn(null);
 
         $em->expects(self::once())
             ->method('getRepository')
@@ -151,18 +145,14 @@ final class EasyMenuExtensionTest extends TestCase
         $twig->expects(self::never())->method('render');
 
         $em = $this->createMock(EntityManagerInterface::class);
-        $menuRepository = new class($menu) {
-            public function __construct(private TestMenu $menu)
-            {
-            }
-
-            public function findOneByCode(string $code): TestMenu
-            {
-                TestCase::assertSame('header', $code);
-
-                return $this->menu;
-            }
-        };
+        $menuRepository = $this->getMockBuilder(TestTwigMenuRepository::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['findOneByCode'])
+            ->getMock();
+        $menuRepository->expects(self::once())
+            ->method('findOneByCode')
+            ->with('header')
+            ->willReturn($menu);
 
         $em->expects(self::once())
             ->method('getRepository')

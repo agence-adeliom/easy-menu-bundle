@@ -6,6 +6,10 @@ namespace Adeliom\EasyMenuBundle\Tests\Fixtures\Repository;
 
 use Adeliom\EasyMenuBundle\Repository\MenuRepository;
 
-class TestMenuRepository extends MenuRepository
+class TestTwigMenuRepository extends MenuRepository
 {
+    public function findOneByCode(string $code): ?object
+    {
+        return null;
+    }
 }

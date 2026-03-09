@@ -6,6 +6,6 @@ namespace Adeliom\EasyMenuBundle\Tests\Fixtures\Repository;
 
 use Adeliom\EasyMenuBundle\Repository\MenuItemRepository;
 
-final class TestMenuItemRepository extends MenuItemRepository
+class TestMenuItemRepository extends MenuItemRepository
 {
 }
