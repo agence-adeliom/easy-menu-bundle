@@ -27,11 +27,11 @@
         "symfony/http-kernel": "^6.4 || ^7.0",
         "symfony/options-resolver": "^6.4 || ^7.0",
         "symfony/property-access": "^6.4 || ^7.0",
-        "easycorp/easyadmin-bundle": "^3.4 || ^v4.0",
+        "easycorp/easyadmin-bundle": "^4.10",
         "agence-adeliom/easy-common-bundle": "^3.1",
         "agence-adeliom/easy-fields-bundle": "^3.1",
         "symfony/yaml": "^6.4 || ^7.0",
-        "stof/doctrine-extensions-bundle": "^1.13"
+        "stof/doctrine-extensions-bundle": "^1.15"
     },
     "autoload": {
         "psr-4": {
