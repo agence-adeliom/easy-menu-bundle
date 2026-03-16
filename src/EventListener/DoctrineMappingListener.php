@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Adeliom\EasyMenuBundle\EventListener;
 
-use Doctrine\Common\EventSubscriber;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -11,6 +13,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  * This class adds automatically the ManyToOne and OneToMany relations in Page and Category entities,
  * because it's normally impossible to do so in a mapped superclass.
  */
+#[AsDoctrineListener(Events::loadClassMetadata)]
 class DoctrineMappingListener
 {
     public function __construct(private readonly string $menuClass, private readonly string $menuItemClass)
@@ -56,9 +59,6 @@ class DoctrineMappingListener
                         'referencedColumnName' => 'id',
                         'onDelete' => 'CASCADE',
                         'nullable' => true,
-                        'orderBy' => [
-                            'position' => 'ASC',
-                        ]
                     ],
                 ],
             ]);
